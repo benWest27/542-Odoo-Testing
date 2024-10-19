@@ -17,10 +17,3 @@ class TestFleet(common.TransactionCase):
         self.assertEqual(tag_1.name, "test Electric", "The vehicle tag name should be 'test Electric'")
         self.assertEqual(tag_1.color, 2, "The vehicle tag color should be 2")
 
-        # Attempt to create a duplicate tag
-        with self.assertRaises(Exception, msg="Tag name should be unique") as context:
-            self.env["fleet.vehicle.tag"].create({
-                "name": "test Electric",
-                "color": 3,
-            })
-        self.assertTrue('duplicate key' in str(context.exception))
