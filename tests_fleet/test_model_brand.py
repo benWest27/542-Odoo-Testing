@@ -1,4 +1,4 @@
-from odoo.tests import common, new_test_user
+from odoo.tests import common
 
 
 class TestFleet(common.TransactionCase):
