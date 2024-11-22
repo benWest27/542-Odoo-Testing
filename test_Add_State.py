@@ -1,35 +1,36 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 # Evan Inman
-from odoo.tests import common, new_test_user
-from odoo import fields
+from jinja2.runtime import to_string
+from odoo.tests import common
+#from odoo import fields
 
 
 class TestFleet(common.TransactionCase):
 
     def test_state_addition(self):
-        manager = new_test_user(self.env, "test fleet manager",
-                                groups="fleet.fleet_group_manager,base.group_partner_manager")
-        user = new_test_user(self.env, "test base user", groups="base.group_user")
 
-        self.FleetTesterBase = self.env["fleet.vehicle.state"].create({
-            "name": "Test State"
-        })
         try:
-            self.FleetTesterBase = self.env[{"fleet.vehicle.state"}].create({
-                "name": "test state"
+            self.FleetTesterBase = self.env["fleet.vehicle.state"].create({
+                "name": "Test State",
             })
-        except:
-            print("Should pass 1")
+        except Exception as erritor:
+            print("Something strange has happened: " + to_string(erritor))
         try:
-            self.FleetTesterBase = self.env[{"fleet.vehicle.state"}].create({
-                "name": "Test State 2"
+            self.FleetTesterBase2 = self.env["fleet.vehicle.state"].create({
+                "name": "test state",
             })
-        except:
-            print("Should pass 2")
+        except Exception as error:
+            print("First, this should pass: " + to_string(error))
         try:
-            self.FleetTesterBase = self.env[{"fleet.vehicle.state"}].create({
-                "name": "Test State"
+            self.FleetTesterBase3 = self.env["fleet.vehicle.state"].create({
+                "name": "Test State 2",
             })
-        except:
-            print("Should fail")
+        except Exception as error2:
+            print("Second, this, too, should pass: " + to_string(error2))
+        try:
+            self.FleetTesterBase4 = self.env["fleet.vehicle.state"].create({
+                "name": "Test State",
+            })
+        except Exception as error3:
+            print("Third, this should fail: " + to_string(error3))
