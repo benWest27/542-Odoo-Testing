@@ -4,7 +4,7 @@ from odoo.tests import common, tagged
 
 @tagged('-standard', 'om_hospital')
 class TestOmHospital(common.TransactionCase):
-    def test_add_medicine(self):
+    def test_cancel_appointment(self):
         # Adds in a patient, then a doctor, and finally an appointment using those test pieces
         try:
             self.patient = self.env['hospital.patient']
