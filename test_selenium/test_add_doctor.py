@@ -6,12 +6,12 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 
-chrome_driver_path = './drivers/chromedriver'
+chrome_driver_path = 'C:\Chromedriver\chromedriver-win64\chromedriver.exe'
 
 def login_to_odoo(driver, username, password):
     driver.get("http://localhost:8069/web/login")
-    update_form_field(driver, "login", username)
-    update_form_field(driver, "password", password)
+    update_form_field(driver, "login",  "Admin")
+    update_form_field(driver, "password", "Admin")
     driver.find_element(By.NAME, "login").send_keys(Keys.RETURN)
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, ".o_user_menu"))
@@ -28,31 +28,56 @@ def TestAddDoctor():
     driver = webdriver.Chrome(service=service)
 
     try:
-        login_to_odoo(driver, "odoo", "admin")
+        #Log in to Odoo
+        login_to_odoo(driver, "Admin", "Admin")
+        print("Login successful.")
 
-        driver.get("http://localhost:8069/web#action=om_hospital.action_hospital_doctor")
-        WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, "button[title='Create record']"))
+        # Navigate to the page
+        driver.get("http://localhost:8069/web#action=475&model=hospital.doctor&view_type=kanban&cids=1&menu_id=346")
+        print("Navigated to the page.")
+
+        new_button_kanban = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "button.o-kanban-button-new"))
         )
+        new_button_kanban.click()
+        print("Create doctor profile.")
 
-        driver.find_element(By.CSS_SELECTOR, "button[title='Create record']").click()
-        update_form_field(driver, "doctor_name", "Dr. John Doe")
-        update_form_field(driver, "age", "45")
-        gender_dropdown = driver.find_element(By.XPATH, "//select[@name='gender']")
-        gender_dropdown.click()
-        driver.find_element(By.XPATH, "//option[@value='male']").click()
-        driver.find_element(By.CSS_SELECTOR, "button[title='Save record']").click()
+        doctor_name_field = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.ID, "doctor_name"))
+        )
+        doctor_name_field.clear()
+        doctor_name_field.send_keys("Dr. John Doe")
+        print("Entered Doctor Name.")
 
+        #Fill the Age field
+        age_field = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.ID, "age"))
+        )
+        age_field.clear()
+        age_field.send_keys("45")
+        print("Entered Age.")
+
+        save_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "button > i.fa.fa-cloud-upload.fa-fw"))
+        )
+        save_button.click()
+        print("Clicked the 'Save' button.")
+
+        #Confirm the record is saved
         WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH, "//span[contains(text(), 'Dr. John Doe')]"))
         )
-        print("Passed: Doctor record created successfully.")
+        print("Record saved successfully, test passed !")
 
     except Exception as e:
-        driver.save_screenshot("error_screenshot.png")
-        print(f"Failed: Could not create doctor record. Error: {e}")
+        print(f"General failure: {e}")
+        driver.save_screenshot("general_error.png")
+        raise
+
     finally:
+        input("Press Enter to close the browser...")
         driver.quit()
 
+
 if __name__ == "__main__":
-    main()
+    TestAddDoctor()
