@@ -7,8 +7,10 @@ class TestOmHospital(common.TransactionCase):
         """
         Test the state transitions for a patient
         """
-
         self.patient = self.env['hospital.patient']
+        existing_patients = self.patient.search([('name','=','John Doe')])
+        if existing_patients:
+            existing_patients.unlink()
 
         patient = self.patient.create({
             'name': 'John Doe',
@@ -28,3 +30,4 @@ class TestOmHospital(common.TransactionCase):
 
         patient.action_cancel()
         self.assertEqual(patient.state, 'cancel', "Patient state should be 'cancel'")
+

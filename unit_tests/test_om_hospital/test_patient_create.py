@@ -8,6 +8,9 @@ class TestOmHospital(common.TransactionCase):
         Test creating a new patient record with valid data
         """
         self.patient = self.env['hospital.patient']
+        existing_patients = self.patient.search([('name','=','John Doe')])
+        if existing_patients:
+            existing_patients.unlink()
 
         patient = self.patient.create({
             'name': 'John Doe',
@@ -21,3 +24,5 @@ class TestOmHospital(common.TransactionCase):
         self.assertEqual(patient.gender, 'male', "Gender should be 'male'")
         self.assertEqual(patient.age, 30, "Age should be 30")
         self.assertEqual(patient.note, 'Test patient creation', "The patient note should be 'Test patient creation'")
+
+
